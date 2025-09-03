@@ -46,9 +46,21 @@ Thumbs.db
 
 # Project specific
 results/
-models/*.h5
-models/*.pkl
 *.log
+
+# Keep sample models but exclude trained ones
+models/trained_*
+models/user_*
+
+# Data files (keep sample data)
+data/raw/
+data/processed/
+data/user_*
+
+# Output files (keep sample output)
+output/user_*
+*.tmp
+*.temp
 
 # Temporary files
 *.tmp
