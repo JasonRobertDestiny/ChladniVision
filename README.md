@@ -251,7 +251,7 @@ pip install -r requirements.txt
 - **作者**: Jason Robert Destiny
 - **邮箱**: johnrobertdestiny@gmail.com
 - **GitHub**: https://github.com/JasonRobertDestiny
-- **项目地址**: https://github.com/JasonRobertDestiny/ChladniVision-Pro
+- **项目地址**: https://github.com/JasonRobertDestiny/ChladniVision
 
 ## 📈 项目路线图
 
@@ -266,4 +266,4 @@ pip install -r requirements.txt
 
 ⭐ 如果这个项目对您有帮助，请考虑给个星标！
 
-[![Star History Chart](https://api.star-history.com/svg?repos=JasonRobertDestiny/ChladniVision-Pro&type=Date)](https://star-history.com/#JasonRobertDestiny/ChladniVision-Pro&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=JasonRobertDestiny/ChladniVision&type=Date)](https://star-history.com/#JasonRobertDestiny/ChladniVision&Date)
