@@ -48,6 +48,12 @@ Thumbs.db
 results/
 *.log
 
+# Machine Learning models
+*.pkl
+*.joblib
+*.h5
+*.hdf5
+
 # Keep sample models but exclude trained ones
 models/trained_*
 models/user_*
@@ -56,9 +62,14 @@ models/user_*
 data/raw/
 data/processed/
 data/user_*
+extracted_frames_*/
 
 # Output files (keep sample output)
-output/user_*
+output/
+output_*/
+output_optimized/predictions/*.png
+output_optimized/training/*.png
+output_optimized/reports/*.txt
 *.tmp
 *.temp
 
