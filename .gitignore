@@ -83,3 +83,21 @@ output_optimized/reports/*.txt
 # Documentation
 *.docx
 *.pdf
+
+# Project specific files
+*.pkl
+models/*.pkl
+output_optimized/
+extracted_frames_full/
+temp/
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

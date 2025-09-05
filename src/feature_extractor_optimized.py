@@ -25,8 +25,9 @@ class OptimizedFeatureExtractor:
     
     def __init__(self, image_size=(128, 128)):
         self.image_size = image_size
-        self.scaler = RobustScaler()
-        self.pca = PCA(n_components=0.95, random_state=42)
+        self.scaler = StandardScaler()  # 使用StandardScaler替代RobustScaler
+        # 优化PCA设置：使用固定维度，确保特征多样性
+        self.pca = PCA(n_components=30, random_state=42)  # 30维平衡性能和多样性
         self.is_fitted = False
         
         # 特征配置
@@ -67,32 +68,64 @@ class OptimizedFeatureExtractor:
         return kernels
     
     def preprocess_image(self, image):
-        """图像预处理"""
+        """专门为克拉尼图形优化的图像预处理"""
         try:
             # 转换为灰度
             if len(image.shape) == 3:
                 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             else:
-                gray = image
+                gray = image.copy()
             
-            # 调整尺寸
-            resized = cv2.resize(gray, self.image_size, interpolation=cv2.INTER_AREA)
+            # 确保图像是uint8类型
+            if gray.dtype != np.uint8:
+                if gray.max() <= 1.0:
+                    gray = (gray * 255).astype(np.uint8)
+                else:
+                    gray = np.clip(gray, 0, 255).astype(np.uint8)
             
-            # 自适应直方图均衡化
-            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+            # 调整尺寸 - 使用更好的插值方法
+            resized = cv2.resize(gray, self.image_size, interpolation=cv2.INTER_CUBIC)
+            
+            # 克拉尼图形专用处理：增强对比度
+            # 使用更温和的CLAHE设置
+            clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(4, 4))
             enhanced = clahe.apply(resized)
             
-            # 高斯滤波去噪
-            denoised = cv2.GaussianBlur(enhanced, (3, 3), 0)
+            # 轻微的高斯模糊去噪，保留边缘细节
+            denoised = cv2.GaussianBlur(enhanced, (3, 3), 0.5)
             
-            # 归一化
-            normalized = denoised.astype(np.float32) / 255.0
+            # 二值化处理 - 对克拉尼图形很重要
+            _, binary = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            # 形态学操作清理噪点
+            kernel = np.ones((2, 2), np.uint8)
+            cleaned = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+            cleaned = cv2.morphologyEx(cleaned, cv2.MORPH_OPEN, kernel)
+            
+            # 归一化到[0,1]范围
+            normalized = cleaned.astype(np.float32) / 255.0
             
             return normalized
             
         except Exception as e:
-            print(f"图像预处理失败: {e}")
-            return np.zeros(self.image_size, dtype=np.float32)
+            print(f"克拉尼图形预处理失败: {e}")
+            # 备用简单处理
+            try:
+                if len(image.shape) == 3:
+                    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                else:
+                    gray = image
+                
+                # 确保正确的数据类型
+                if gray.dtype != np.uint8:
+                    gray = np.clip(gray * 255 if gray.max() <= 1.0 else gray, 0, 255).astype(np.uint8)
+                
+                resized = cv2.resize(gray, self.image_size, interpolation=cv2.INTER_AREA)
+                normalized = resized.astype(np.float32) / 255.0
+                return normalized
+            except Exception as e2:
+                print(f"备用处理也失败: {e2}")
+                return np.zeros(self.image_size, dtype=np.float32)
     
     def extract_enhanced_sift_features(self, image):
         """提取增强的SIFT特征"""
