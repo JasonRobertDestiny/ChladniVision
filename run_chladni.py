@@ -22,36 +22,30 @@ def show_usage():
     """显示使用说明"""
     print("📖 可用模式:")
     print()
-    print("🎯 统一命令模式 (推荐):")
-    print("   python run_chladni.py /analyze")
-    print("   python run_chladni.py /build")
-    print("   python run_chladni.py /scan")
-    print("   python run_chladni.py /troubleshoot")
-    print()
-    print("🔧 传统模式:")
+    print("🎯 主要功能:")
     print("   python run_chladni.py --demo                    # 快速演示")
     print("   python run_chladni.py --train --data_dir data/data_augmented/   # 训练模型")
     print("   python run_chladni.py --predict image.png        # 预测图像")
     print("   python run_chladni.py --interactive              # 交互模式")
     print()
-    print("💡 Persona 说明:")
-    print("   /analyze    - 系统架构分析与设计优化")
-    print("   /build      - 用户体验优化与界面设计")
-    print("   /scan       - 安全评估与漏洞分析")
-    print("   /troubleshoot - 性能分析与问题诊断")
+    print("� 快捷命令 (实验性):")
+    print("   python run_chladni.py /scan       # 系统演示")
+    print("   python run_chladni.py /analyze    # 交互分析")
+    print("   python run_chladni.py /build      # 训练模型")
+    print("   python run_chladni.py /troubleshoot # 问题诊断")
     print()
     print("🌟 常用示例:")
     print("   # 训练模型（使用增强数据集）")
     print("   python run_chladni.py --train --data_dir data/data_augmented/")
     print()
     print("   # 预测图像")
-    print("   python run_chladni.py --predict data/data_augmented/1100Hz/1100hz_001.png")
+    print("   python run_chladni.py --predict data/600Hz/600hz_001.png")
     print()
     print("   # 快速演示")
     print("   python run_chladni.py --demo")
     print()
-    print("   # 统一命令")
-    print("   python run_chladni.py /analyze")
+    print("   # 交互模式")
+    print("   python run_chladni.py --interactive")
     print()
 
 def main():
@@ -67,53 +61,41 @@ def main():
     
     # 检查是否使用统一命令格式
     if len(args) > 0 and args[0].startswith('/'):
-        # 使用统一命令系统
-        try:
-            # 导入统一命令系统
-            sys.path.insert(0, os.path.dirname(__file__))
-            from chladni_vision_unified import main as unified_main
-            
-            # 传递参数给统一系统
-            sys.argv = ['chladni_vision_unified.py'] + args
-            unified_main()
-            
-        except ImportError:
-            print("❌ 无法导入统一命令系统")
-            print("   请确保 chladni_vision_unified.py 文件存在")
-        except Exception as e:
-            print(f"❌ 统一命令执行失败: {e}")
+        # 统一命令模式已整合到优化版本
+        print("ℹ️  统一命令模式已整合，使用优化版本处理...")
+        print(f"   处理命令: {args[0]}")
+        print()
+        
+        # 转换为优化版本可识别的参数
+        if args[0] == '/scan':
+            args = ['--demo']  # 演示功能
+        elif args[0] == '/analyze':
+            args = ['--interactive']  # 交互分析
+        elif args[0] == '/build':
+            args = ['--train', '--data_dir', 'data/data_augmented/']  # 构建模型
+        elif args[0] == '/troubleshoot':
+            args = ['--predict', 'data/600Hz/600hz_001.png']  # 问题诊断
+        else:
+            args = ['--demo']  # 默认演示
     
-    else:
-        # 使用传统优化版本
-        try:
-            # 导入优化版本
-            sys.path.insert(0, os.path.dirname(__file__))
-            from chladni_vision_optimized import main as optimized_main
-            
-            # 传递参数给优化版本
-            sys.argv = ['chladni_vision_optimized.py'] + args
-            optimized_main()
-            
-        except ImportError:
-            print("❌ 无法导入优化版本")
-            print("   请确保 chladni_vision_optimized.py 文件存在")
-            print("   尝试使用原始版本...")
-            
-            # 回退到原始版本
-            try:
-                sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
-                from chladni_vision_pro import main as original_main
-                
-                sys.argv = ['chladni_vision_pro.py'] + args
-                original_main()
-                
-            except ImportError:
-                print("❌ 无法导入任何版本的ChladniVision")
-                print("   请检查文件结构和依赖项")
-            except Exception as e:
-                print(f"❌ 原始版本执行失败: {e}")
-        except Exception as e:
-            print(f"❌ 优化版本执行失败: {e}")
+    # 使用优化版本处理所有命令
+    try:
+        # 导入优化版本
+        sys.path.insert(0, os.path.dirname(__file__))
+        from chladni_vision_optimized import main as optimized_main
+        
+        # 传递参数给优化版本
+        sys.argv = ['chladni_vision_optimized.py'] + args
+        optimized_main()
+        
+    except ImportError:
+        print("❌ 无法导入优化版本")
+        print("   请确保 chladni_vision_optimized.py 文件存在")
+        print("   请检查依赖项是否正确安装")
+        show_usage()
+    except Exception as e:
+        print(f"❌ 优化版本执行失败: {e}")
+        print("   请检查输入参数和文件路径")
 
 if __name__ == "__main__":
     main()
